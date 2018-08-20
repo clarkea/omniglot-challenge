@@ -408,8 +408,8 @@ def check_accuracy(sample_loader, query_loader, model):
 
 def train_SN(model, optimizer, scheduler, episodes=1):
     """Train using siamese network"""
-    PATH = './SN_Training/siamese_v8'
-    PATH2 = './SN_Training/siamese_draft_v8'
+    PATH = './SN_Training/siamese_v9'
+    PATH2 = './SN_Training/siamese_draft_v9'
     model = model.to(device=device)  # move the model parameters to CPU/GPU
     for episode in range(episodes):
         scheduler.step(episode)
@@ -470,7 +470,7 @@ def train_SN(model, optimizer, scheduler, episodes=1):
         if (episode+1)%50 == 0:
             print("episode:",episode+1,"loss",loss.data)
 
-        if (episode+1)%500 == 0:
+        if (episode+1)%5000 == 0:
             ''' Test the model '''
             # make the samplers 
             test_sample_sampler = SampleSampler(total_cl=659)
