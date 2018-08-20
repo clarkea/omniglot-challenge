@@ -42,7 +42,7 @@ LEARNING_RATE = 0.01
 NUM_EX = 1
 NUM_CL = 2
 EPISODES = 1000000
-LR_STEP = 100000
+LR_STEP = 20000
 
 ###############################################
 #Helper Functions
