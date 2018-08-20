@@ -293,7 +293,6 @@ class SiameseNetwork(nn.Module):
         out = self.comp1(x)
         out = self.comp2(out)
         out = flatten(out)
-        out = self.comp3(out)
         out = self.fc1(out)
         out = self.fc2(out)
         return out
