@@ -33,7 +33,7 @@ import random
 IMG_SIZE = 26
 HIDDEN_LAYER_SIZE = 8
 FC_SIZE = 64
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.01
 # Generally, want example number = class number - 1
 # This is to get an equal amount of matching examples
 # and mismatched examples.
@@ -269,10 +269,8 @@ class SiameseNetwork(nn.Module):
                         nn.ReLU(),
                         nn.MaxPool2d(2))
         self.comp2 = nn.Sequential(
-                        nn.Conv2d(channel_num,channel_num,kernel_size=2,padding=0),
-                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
-                        nn.ReLU(),
-                        nn.MaxPool2d(2))
+                        nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=0),
+                        nn.ReLU())
         
         # input is 64 to FC layer 1
         self.fc1 = nn.Sequential(
@@ -464,8 +462,8 @@ def train_SN(model, optimizer, scheduler, episodes=1):
         
         # train and update model
         optimizer.zero_grad()
-        loss = F.binary_cross_entropy(scores, targets)
-        #loss = F.mse_loss(scores, targets)
+        #loss = F.binary_cross_entropy(scores, targets)
+        loss = F.mse_loss(scores, targets)
         loss.backward()
         #nn.utils.clip_grad_norm_(model.parameters(),0.5)
         optimizer.step()
