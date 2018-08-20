@@ -464,8 +464,8 @@ def train_SN(model, optimizer, scheduler, episodes=1):
         
         # train and update model
         optimizer.zero_grad()
-        loss = F.binary_cross_entropy(scores, targets)
-        #loss = F.mse_loss(scores, targets)
+        #loss = F.binary_cross_entropy(scores, targets)
+        loss = F.mse_loss(scores, targets)
         loss.backward()
         #nn.utils.clip_grad_norm_(model.parameters(),0.5)
         optimizer.step()
