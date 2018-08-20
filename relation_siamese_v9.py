@@ -33,7 +33,7 @@ import random
 IMG_SIZE = 26
 HIDDEN_LAYER_SIZE = 8
 FC_SIZE = 64
-LEARNING_RATE = 0.0001
+LEARNING_RATE = 0.01
 # Generally, want example number = class number - 1
 # This is to get an equal amount of matching examples
 # and mismatched examples.
@@ -246,32 +246,32 @@ class SiameseNetwork(nn.Module):
         self.layer1 = nn.Sequential(
                         nn.Conv2d(in_channel,channel_num,kernel_size=3,padding=0),
                         nn.ReLU(),
-                        nn.BatchNorm2d(channel_num, momentum=0.9, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
                         nn.MaxPool2d(2))
         self.layer2 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
                         nn.ReLU(),
-                        nn.BatchNorm2d(channel_num, momentum=0.9, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
                         nn.MaxPool2d(2))
         self.layer3 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
                         nn.ReLU(),
-                        nn.BatchNorm2d(channel_num, momentum=0.9, affine=True))
+                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True))
         self.layer4 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
                         nn.ReLU(),
-                        nn.BatchNorm2d(channel_num, momentum=0.9, affine=True))
+                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True))
 
         # output is 6x6x64 after conv section
         self.comp1 = nn.Sequential(
                         nn.Conv2d(channel_num*2,channel_num,kernel_size=3,padding=1),
                         nn.ReLU(),
-                        nn.BatchNorm2d(channel_num, momentum=0.9, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
                         nn.MaxPool2d(2))
         self.comp2 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=2,padding=0),
                         nn.ReLU(),
-                        nn.BatchNorm2d(channel_num, momentum=0.9, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
                         nn.MaxPool2d(2))
         
         # input is 64 to FC layer 1
