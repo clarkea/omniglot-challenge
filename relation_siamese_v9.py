@@ -33,7 +33,7 @@ import random
 IMG_SIZE = 26
 HIDDEN_LAYER_SIZE = 8
 FC_SIZE = 64
-LEARNING_RATE = 0.01
+LEARNING_RATE = 0.005
 # Generally, want example number = class number - 1
 # This is to get an equal amount of matching examples
 # and mismatched examples.
