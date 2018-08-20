@@ -31,9 +31,9 @@ import random
 #Hyperparameters
 ###############################################
 IMG_SIZE = 32
-HIDDEN_LAYER_SIZE = 1*1*64
-FC_SIZE = 2*2*64
-LEARNING_RATE = 0.03
+HIDDEN_LAYER_SIZE = 32
+FC_SIZE = 64
+LEARNING_RATE = 0.01
 # Generally, want example number = class number - 1
 # This is to get an equal amount of matching examples
 # and mismatched examples.
@@ -41,8 +41,8 @@ LEARNING_RATE = 0.03
 # Sampler pulls 1 example from all different classes
 NUM_EX = 1
 NUM_CL = 2
-EPISODES = 100000
-LR_STEP = 10000
+EPISODES = 1000000
+LR_STEP = 100000
 
 ###############################################
 #Helper Functions
@@ -257,20 +257,26 @@ class SiameseNetwork(nn.Module):
         self.layer4 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
                         nn.BatchNorm2d(channel_num, momentum=1, affine=True),
+                        nn.ReLU())
+        # output is 4x4x64 after conv section
+        self.comp1 = nn.Sequential(
+                        nn.Conv2d(channel_num*2,channel_num,kernel_size=3,padding=1),
+                        nn.BatchNorm2d(channel_num, momentum=1, affine=True),
                         nn.ReLU(),
                         nn.MaxPool2d(2))
-        # output is 2x2x64 after conv section
-
-        # input is 2x2x64 = 256, output hidden layer
-        # use sigmoid for the FC layers
+        self.comp2 = nn.Sequential(
+                        nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
+                        nn.BatchNorm2d(channel_num, momentum=1, affine=True),
+                        nn.ReLU(),
+                        nn.MaxPool2d(2))
+        
+        # input is 64 to FC layer 1
         self.fc1 = nn.Sequential(
                     nn.Linear(FC_num,hidden_num),
                     nn.ReLU())
 
-        # only do last FC layer after difference function
-        # input is hidden layer, output is 1 
         self.fc2 = nn.Sequential(
-                    nn.Linear(2*hidden_num,output_size),
+                    nn.Linear(hidden_num,output_size),
                     nn.Sigmoid())
 
     def forward_once(self, x):
@@ -278,15 +284,21 @@ class SiameseNetwork(nn.Module):
         out = self.layer2(out)
         out = self.layer3(out)
         out = self.layer4(out)
+        return out
+    
+    def relate(self, x):
+        out = self.comp1(x)
+        out = self.comp2(out)
         out = flatten(out)
         out = self.fc1(out)
+        out = self.fc2(out)
         return out
 
     def forward(self,x1,x2):
         out1 = self.forward_once(x1)
         out2 = self.forward_once(x2)
-        out_diff = torch.cat((out1,out2),1)
-        out3 = self.fc2(out_diff)
+        out_cat = torch.cat((out1,out2),1)
+        out3 = self.relate(out_cat)
         return out3
 
 '''
@@ -397,8 +409,8 @@ def check_accuracy(sample_loader, query_loader, model):
 
 def train_SN(model, optimizer, scheduler, episodes=1):
     """Train using siamese network"""
-    PATH = './SN_Training/siamese_try'
-    PATH2 = './SN_Training/siamese_draft'
+    PATH = './SN_Training/siamese_v8'
+    PATH2 = './SN_Training/siamese_draft_v8'
     model = model.to(device=device)  # move the model parameters to CPU/GPU
     for episode in range(episodes):
         scheduler.step(episode)
@@ -449,8 +461,8 @@ def train_SN(model, optimizer, scheduler, episodes=1):
         
         # train and update model
         optimizer.zero_grad()
-        #loss = F.binary_cross_entropy(scores, targets)
-        loss = F.mse_loss(scores, targets)
+        loss = F.binary_cross_entropy(scores, targets)
+        #loss = F.mse_loss(scores, targets)
         loss.backward()
         #nn.utils.clip_grad_norm_(model.parameters(),0.5)
         optimizer.step()
@@ -488,13 +500,15 @@ def TrainTheModel():
     snet.layer2.apply(init_weights)
     snet.layer3.apply(init_weights)
     snet.layer4.apply(init_weights)
+    snet.comp1.apply(init_weights)
+    snet.comp2.apply(init_weights)
     snet.fc1.apply(init_weights)
     snet.fc2.apply(init_weights)
 
     snet_optim = make_optimizer(snet,LEARNING_RATE)
-    snet_scheduler = StepLR(snet_optim,step_size=10000,gamma=0.5)
+    snet_scheduler = StepLR(snet_optim,step_size=LR_STEP,gamma=0.5)
     print("Begin Training...")
-    train_SN(snet, snet_optim, snet_scheduler, episodes = 100000)
+    train_SN(snet, snet_optim, snet_scheduler, episodes = EPISODES)
 
 ###############################################
 #Test after saving a model
