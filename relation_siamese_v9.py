@@ -261,23 +261,23 @@ class SiameseNetwork(nn.Module):
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
                         nn.ReLU(),
                         nn.BatchNorm2d(channel_num, momentum=0.01, affine=True))
+
         # output is 6x6x64 after conv section
         self.comp1 = nn.Sequential(
                         nn.Conv2d(channel_num*2,channel_num,kernel_size=3,padding=1),
                         nn.ReLU(),
                         nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
                         nn.MaxPool2d(2))
-        # last is equivalent to a FC layer
         self.comp2 = nn.Sequential(
-                        nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=0),
-                        nn.ReLU())
+                        nn.Conv2d(channel_num,channel_num,kernel_size=2,padding=0),
+                        nn.ReLU(),
+                        nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
+                        nn.MaxPool2d(2))
         
         # input is 64 to FC layer 1
         self.fc1 = nn.Sequential(
-                    nn.BatchNorm1d(channel_num, momentum=0.01, affine=True),
                     nn.Linear(FC_num,hidden_num),
                     nn.ReLU())
-
         self.fc2 = nn.Sequential(
                     nn.Linear(hidden_num,output_size),
                     nn.Sigmoid())
