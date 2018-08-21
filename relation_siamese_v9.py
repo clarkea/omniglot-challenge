@@ -34,15 +34,15 @@ IMG_SIZE = 26
 HIDDEN_LAYER_SIZE = 8
 FC_SIZE = 64
 LEARNING_RATE = 0.001
-# Generally, want example number = class number - 1
-# This is to get an equal amount of matching examples
-# and mismatched examples.
-# NUM_EX is the examples of the same class
-# Sampler pulls 1 example from all different classes
-NUM_EX = 1
-NUM_CL = 2
-EPISODES = 1000000
-LR_STEP = 100000
+''' NUM_EX and NUM_CL are set to simply
+choose a single random pair of classes
+from the training set every "episode" '''
+NUM_EX = 4
+NUM_CL = 5
+#EPISODES = 1000000
+#LR_STEP = 100000
+EPISODES = 100000
+LR_STEP = 10000
 
 ###############################################
 #Helper Functions
@@ -116,7 +116,9 @@ def init_weights(m):
 ###############################################
 print("Building Transform")
 
-''' Add random rotations! '''
+''' Need to make it so that there are unmodified images 
+as well as the affine transformed or rotated images
+to increase the size of the dataset '''
 
 #degrees = [0,90,180,270]
 
@@ -268,14 +270,15 @@ class SiameseNetwork(nn.Module):
                         nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
                         nn.ReLU(),
                         nn.MaxPool2d(2))
+        # this is technically a fully connected layer
         self.comp2 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=0),
-                        nn.ReLU())
+                        nn.SELU())
         
         # input is 64 to FC layer 1
         self.fc1 = nn.Sequential(
                     nn.Linear(FC_num,hidden_num),
-                    nn.PReLU(init=0.1))
+                    nn.SELU())
         self.fc2 = nn.Sequential(
                     nn.Linear(hidden_num,output_size),
                     nn.Sigmoid())
@@ -472,7 +475,7 @@ def train_SN(model, optimizer, scheduler, episodes=1):
         if (episode+1)%50 == 0:
             print("episode:",episode+1,"loss",loss.data)
 
-        if (episode+1)%5000 == 0:
+        if (episode+1)%500 == 0:
             ''' Test the model '''
             # make the samplers 
             test_sample_sampler = SampleSampler(total_cl=659)
