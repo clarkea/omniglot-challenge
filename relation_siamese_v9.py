@@ -543,7 +543,7 @@ if __name__ == '__main__':
             TrainTheModel()
         elif program_mode == '2':
             model = SiameseNetwork(FC_num=FC_SIZE,hidden_num=HIDDEN_LAYER_SIZE)
-            model.load_state_dict(torch.load("./SN_Training/siamese_try"))
+            model.load_state_dict(torch.load("./SN_Training/siamese_v9_test"))
             scores = []
             for i in range(1000):
                 scores += TestTheModel(model)
