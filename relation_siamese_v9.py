@@ -275,7 +275,7 @@ class SiameseNetwork(nn.Module):
         # input is 64 to FC layer 1
         self.fc1 = nn.Sequential(
                     nn.Linear(FC_num,hidden_num),
-                    nn.ReLU())
+                    nn.PReLU())
         self.fc2 = nn.Sequential(
                     nn.Linear(hidden_num,output_size),
                     nn.Sigmoid())
