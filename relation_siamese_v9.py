@@ -556,9 +556,9 @@ if __name__ == '__main__':
             scores = []
             for i in range(1000):
                 scores += TestTheModel(model)
-            avg_score = np.mean(scores)
-            std_score = np.std(scores, ddof=1)
-            print('Mean (%.2f) StDev (%.2f)' % (avg_score, std_score))
+            avg_score = np.mean(100*scores)
+            std_score = np.std(100*scores, ddof=1)
+            print('Mean (%.4f) StDev (%.4f)' % (avg_score, std_score))
             histo = np.histogram(scores, bins=21, range=(0,20))
             plt.plot(histo)
             plt.show()
