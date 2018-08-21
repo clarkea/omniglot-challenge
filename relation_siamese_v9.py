@@ -37,8 +37,8 @@ LEARNING_RATE = 0.001
 ''' NUM_EX and NUM_CL are set to simply
 choose a single random pair of classes
 from the training set every "episode" '''
-NUM_EX = 4
-NUM_CL = 5
+NUM_EX = 9
+NUM_CL = 10
 #EPISODES = 1000000
 #LR_STEP = 100000
 EPISODES = 100000
@@ -465,8 +465,8 @@ def train_SN(model, optimizer, scheduler, episodes=1):
         
         # train and update model
         optimizer.zero_grad()
-        #loss = F.binary_cross_entropy(scores, targets)
-        loss = F.mse_loss(scores, targets)
+        loss = F.binary_cross_entropy(scores, targets)
+        #loss = F.mse_loss(scores, targets)
         loss.backward()
         #nn.utils.clip_grad_norm_(model.parameters(),0.5)
         optimizer.step()
