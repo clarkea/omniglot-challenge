@@ -539,13 +539,16 @@ if __name__ == '__main__':
             TrainTheModel()
         elif program_mode == '2':
             model = SiameseNetwork(FC_num=FC_SIZE,hidden_num=HIDDEN_LAYER_SIZE)
-            model.load_state_dict(torch.load("./SN_Training/siamese_try"))
+            model.load_state_dict(torch.load('./SN_Training/siamese_v8'))
             scores = []
-            for i in range(100):
+            for i in range(1000):
                 scores += TestTheModel(model)
             avg_score = np.mean(scores)
-            std_score = np.std(scores)
+            std_score = np.std(scores, ddof=1)
             print('Mean (%.2f) StDev (%.2f)' % (avg_score, std_score))
+            histo = np.histogram(scores, bins=21, range=(0,20))
+            plt.plot(histo)
+            plt.show()
         else:
             print('Sorry, try again.')
         
