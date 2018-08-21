@@ -245,27 +245,27 @@ class SiameseNetwork(nn.Module):
 
         self.layer1 = nn.Sequential(
                         nn.Conv2d(in_channel,channel_num,kernel_size=3,padding=0),
-                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
                         nn.ReLU(),
                         nn.MaxPool2d(2))
         self.layer2 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
                         nn.ReLU(),                        
                         nn.MaxPool2d(2))
         self.layer3 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
                         nn.ReLU())
         self.layer4 = nn.Sequential(
                         nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
                         nn.ReLU())
 
         # output is 6x6x64 after conv section
         self.comp1 = nn.Sequential(
                         nn.Conv2d(channel_num*2,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(channel_num, momentum=0.99, affine=True),
+                        nn.BatchNorm2d(channel_num, momentum=0.01, affine=True),
                         nn.ReLU(),
                         nn.MaxPool2d(2))
         self.comp2 = nn.Sequential(
