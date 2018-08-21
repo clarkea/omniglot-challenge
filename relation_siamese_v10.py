@@ -33,7 +33,7 @@ import random
 IMG_SIZE = 26
 HIDDEN_LAYER_SIZE = 8
 FC_SIZE = 64
-LEARNING_RATE = 0.001
+LEARNING_RATE = 0.01
 ''' NUM_EX and NUM_CL are set to simply
 choose a single random pair of classes
 from the training set every "episode" '''
