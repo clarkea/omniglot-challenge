@@ -505,6 +505,7 @@ if __name__ == '__main__':
             avg_score = 100*np.mean(scores)
             std_score = 100*np.std(scores, ddof=1)
             print('Mean (%.4f) StDev (%.4f)' % (avg_score, std_score))
+            np.save('scores_v91',scores)
             histo = np.histogram(scores, bins=21, range=(0,20))
             plt.plot(histo)
             plt.show()
