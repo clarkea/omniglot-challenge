@@ -465,17 +465,17 @@ def train_SN(model, optimizer, scheduler, episodes=1):
         
         # train and update model
         optimizer.zero_grad()
-        loss = F.binary_cross_entropy(scores, targets)
-        #loss = F.mse_loss(scores, targets)
+        #loss = F.binary_cross_entropy(scores, targets)
+        loss = F.mse_loss(scores, targets)
         loss.backward()
         #nn.utils.clip_grad_norm_(model.parameters(),0.5)
         optimizer.step()
 
         # episodic updates
-        if (episode+1)%50 == 0:
+        if (episode+1)%10 == 0:
             print("episode:",episode+1,"loss",loss.data)
 
-        if (episode+1)%500 == 0:
+        if (episode+1)%100 == 0:
             ''' Test the model '''
             # make the samplers 
             test_sample_sampler = SampleSampler(total_cl=659)
@@ -490,7 +490,7 @@ def train_SN(model, optimizer, scheduler, episodes=1):
             test_query_loader = DataLoader(omni_test, batch_size=q_batch_num, sampler=test_query_sampler)
             check_accuracy(test_sample_loader, test_query_loader, model)
 
-        if (episode+1)%5000 == 0:
+        if (episode+1)%1000 == 0:
             """ Save as a draft model """
             torch.save(model.state_dict(), PATH)
             
