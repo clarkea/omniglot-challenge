@@ -33,7 +33,7 @@ import random
 IMG_SIZE = 26
 HIDDEN_LAYER_SIZE = 8
 FC_SIZE = 64
-LEARNING_RATE = 0.01
+LEARNING_RATE = 0.001
 # Generally, want example number = class number - 1
 # This is to get an equal amount of matching examples
 # and mismatched examples.
@@ -275,7 +275,7 @@ class SiameseNetwork(nn.Module):
         # input is 64 to FC layer 1
         self.fc1 = nn.Sequential(
                     nn.Linear(FC_num,hidden_num),
-                    nn.PReLU())
+                    nn.PReLU(init=0.1))
         self.fc2 = nn.Sequential(
                     nn.Linear(hidden_num,output_size),
                     nn.Sigmoid())
