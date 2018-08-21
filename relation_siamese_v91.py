@@ -319,63 +319,6 @@ class SiameseNetwork(nn.Module):
         out3 = self.relate(out_cat)
         return out3
 
-'''
-class CNNEncoder(nn.Module):
-    def __init__(self, in_channel, channel_num, out_classes):
-        super().__init__()
-        self.layer1 = nn.Sequential(
-                        nn.Conv2d(in_channel,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(64),
-                        nn.ReLU(),
-                        nn.MaxPool2d(2))
-        self.layer2 = nn.Sequential(
-                        nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(64),
-                        nn.ReLU(),
-                        nn.MaxPool2d(2))
-        self.layer3 = nn.Sequential(
-                        nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(64),
-                        nn.ReLU(),
-                        nn.MaxPool2d(2))
-        self.layer4 = nn.Sequential(
-                        nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(64),
-                        nn.ReLU())
-        # output is 4x4
-
-    def forward(self,x):
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-
-class RelationNetwork(nn.Module):
-    def __init__(self, channel_num, input_size, hidden_size):
-        super(RelationNetwork, self).__init__()
-        self.layer1 = nn.Sequential(
-                        nn.Conv2d(channel_num*2,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(64),
-                        nn.ReLU(),
-                        nn.MaxPool2d(2))
-        self.layer2 = nn.Sequential(
-                        nn.Conv2d(channel_num,channel_num,kernel_size=3,padding=1),
-                        nn.BatchNorm2d(64),
-                        nn.ReLU(),
-                        nn.MaxPool2d(2))
-        self.fc1 = nn.Linear(input_size,hidden_size)
-        self.fc2 = nn.Linear(hidden_size,1)
-
-    def forward(self,x):
-        out = self.layer1(x)
-        out = self.layer2(out)
-        out = out.view(out.size(0),-1)
-        out = F.relu(self.fc1(out))
-        out = torch.sigmoid(self.fc2(out))
-        return out
-
-'''
-
 ###############################################
 #Build Dataset
 ###############################################
@@ -559,9 +502,9 @@ if __name__ == '__main__':
             scores = []
             for i in range(1000):
                 scores += TestTheModel(model)
-            avg_score = np.mean(scores)
-            std_score = np.std(scores, ddof=1)
-            print('Mean (%.2f) StDev (%.2f)' % (avg_score, std_score))
+            avg_score = 100*np.mean(scores)
+            std_score = 100*np.std(scores, ddof=1)
+            print('Mean (%.4f) StDev (%.4f)' % (avg_score, std_score))
             histo = np.histogram(scores, bins=21, range=(0,20))
             plt.plot(histo)
             plt.show()
