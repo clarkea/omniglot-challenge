@@ -27,6 +27,11 @@ import os
 import math
 import random
 
+# Global save paths
+PATH = './SN_Training/siamese_v91'
+PATH2 = './SN_Training/siamese_draft_v91'
+TEST_PATH = './SN_Training/siamese_v91_test'
+
 ###############################################
 #Hyperparameters
 ###############################################
@@ -125,6 +130,15 @@ to increase the size of the dataset '''
 transform = T.Compose([
                 T.Grayscale(),
                 T.RandomAffine(10, translate=None, scale=(0.8,1.2), shear=17),
+                T.CenterCrop(104),
+                T.Resize((IMG_SIZE,IMG_SIZE),interpolation=1),
+                T.ToTensor(),
+                T.Normalize([0.924562], [0.264097]),
+                T.Lambda(lambda x: negative(x))
+            ])
+
+test_transform = T.Compose([
+                T.Grayscale(),
                 T.CenterCrop(104),
                 T.Resize((IMG_SIZE,IMG_SIZE),interpolation=1),
                 T.ToTensor(),
@@ -372,7 +386,7 @@ class RelationNetwork(nn.Module):
 #deleted a training class with only 19 images due to an extraction error
 print("Building datasets...")
 omni_train = dset.ImageFolder(root='./training_images/', transform=transform)
-omni_test  = dset.ImageFolder(root='./testing_images/', transform=transform)
+omni_test  = dset.ImageFolder(root='./testing_images/', transform=test_transform)
 
 ###############################################
 #Function for testing the model
@@ -413,8 +427,6 @@ def check_accuracy(sample_loader, query_loader, model):
 
 def train_SN(model, optimizer, scheduler, episodes=1):
     """Train using siamese network"""
-    PATH = './SN_Training/siamese_v91'
-    PATH2 = './SN_Training/siamese_draft_v91'
     model = model.to(device=device)  # move the model parameters to CPU/GPU
     for episode in range(episodes):
         scheduler.step(episode)
@@ -543,7 +555,7 @@ if __name__ == '__main__':
             TrainTheModel()
         elif program_mode == '2':
             model = SiameseNetwork(FC_num=FC_SIZE,hidden_num=HIDDEN_LAYER_SIZE)
-            model.load_state_dict(torch.load("./SN_Training/siamese_v9"))
+            model.load_state_dict(torch.load(TEST_PATH))
             scores = []
             for i in range(1000):
                 scores += TestTheModel(model)
