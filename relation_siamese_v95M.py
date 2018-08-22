@@ -30,7 +30,7 @@ import random
 # Global save paths
 PATH = './SN_Training/siamese_v91'
 PATH2 = './SN_Training/siamese_draft_v91'
-TEST_PATH = './SN_Training/siamese_v91_test3'
+TEST_PATH = './SN_Training/siamese_v95M'
 
 ###############################################
 #Hyperparameters
@@ -538,7 +538,7 @@ if __name__ == '__main__':
             avg_score = 100*np.mean(scores)
             std_score = 100*np.std(scores, ddof=1)
             print('Mean (%.4f) StDev (%.4f)' % (avg_score, std_score))
-            np.save('scores_v91',scores)
+            np.save('scores_95M',scores)
             histo = np.histogram(scores, bins=21, range=(0,20))
             plt.plot(histo)
             plt.show()
